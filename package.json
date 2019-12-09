@@ -1,0 +1,14 @@
+{
+  "name": "nest-literal",
+  "description": "Use string literals with functions and promises.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alancnet/nest-literal"
+  },
+  "scripts": {
+    "test": "node test.js"
+  }
+}
