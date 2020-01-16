@@ -1,4 +1,4 @@
-const {nest, join} = require('.')
+const {nest, join, raw} = require('.')
 const assert = require('assert')
 
 async function main() {
@@ -36,10 +36,12 @@ async function main() {
 
   await testFlatten()
 
-  console.log(nest`hello ${join([1,2,3].map(x => nest`[${x}]`))} world`)
-  console.log(template3.plus(template4))
+  // console.log(nest`hello ${join([1,2,3].map(x => nest`[${x}]`))} world`)
+  // console.log(template3.plus(template4))
 
-  console.log(await [template1, template2, template3].reduce(join.with('---'), null))
+  // console.log(await [template1, template2, template3].reduce(join.with('---'), null))
+
+  await testRaw()
 }
 
 async function testFlatten() {
@@ -61,9 +63,15 @@ async function testFlatten() {
   assert.deepStrictEqual(d.substitutions, [3])
 
 
-  console.log(String.raw(...d))
-  console.log(...d)
+  // console.log(String.raw(...d))
+  //console.log(...d)
   
+}
+
+async function testRaw() {
+  const a = nest`hello ${raw('world')} ${raw('foo')} bar`
+  assert.deepStrictEqual(a.callSite, ['hello world foo bar'])
+  assert.deepStrictEqual(a.substitutions, [])
 }
 
 main().catch(err => {

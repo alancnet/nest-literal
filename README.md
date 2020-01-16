@@ -86,3 +86,18 @@ const templateC = [templateA, templateB].reduce(join.with(','))
 
 console.log(await template)
 ```
+
+### Using raw strings
+
+If you want to manipulate your template and keep your values separate, you can use `raw`.
+
+
+```javascript
+const { nest, raw } = require('nest-literal')
+
+const tableName = 'MyTable'
+const name = 'Leroy'
+
+const sql = nest`select * from ${raw(tableName)} where name = ${name}`
+
+```

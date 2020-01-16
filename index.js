@@ -13,6 +13,10 @@ function joinWith (delim, templates) {
   return accumulator
 }
 
+function raw(string) {
+  return new String(string)
+}
+
 function join (...templates) {
   if (templates.length === 1 && templates[0] && templates[0][Symbol.iterator]) return joinWith('', templates[0])
   return joinWith('', templates)
@@ -81,6 +85,10 @@ class Template {
           callSite.splice(i + 1, 0, ...sub.callSite.slice(1, sub.callSite.length - 1))
           substitutions.splice(i, 1, ...sub.substitutions)
         }
+      } else if (sub instanceof String) {
+        callSite[i] = callSite[i] + sub + callSite[i + 1]
+        callSite.splice(i + 1, 1)
+        substitutions.splice(i, 1)
       }
     }
 
@@ -121,3 +129,4 @@ class Template {
 module.exports = nest
 module.exports.nest = nest
 module.exports.join = join
+module.exports.raw = raw
