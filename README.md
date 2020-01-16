@@ -35,3 +35,54 @@ const template = nest`Hello ${data}`
 
 console.log(await template)
 ```
+
+### Nested usage
+
+You can nest templates. The resulting template is flattened.
+
+```javascript
+const nest = require('nest-literal')
+
+async function data() {
+  return 'World'
+}
+
+const templateA = nest`Hello Data`
+const templateB = nest`Foo ${templateA}, ${templateA} Bar`
+
+console.log(await template)
+```
+
+### Joining templates
+
+If you have multiple templates, you can join them using `join` or `.plus`
+
+```javascript
+const { nest, join } = require('nest-literal')
+
+async function data() {
+  return 'World'
+}
+
+const templateA = nest`Hello Data`
+const templateB = nest`Foo ${templateA}, ${templateA} Bar`
+
+
+// Using join 
+const templateC = join(templateA, templateB)
+
+// Using join with a delimiter
+const templateC = join.with(',')(templateA, templateB)
+
+// Using plus
+const templateC = templateA.plus(templateB)
+
+// Using reduce
+const templateC = [templateA, templateB].reduce(join, null)
+
+// Using reduce with a delimiter
+const templateC = [templateA, templateB].reduce(join.with(','))
+
+
+console.log(await template)
+```
