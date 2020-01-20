@@ -7,7 +7,7 @@ function joinWith (delim, templates) {
   for (let template of templates) {
     if (template instanceof Template) {
       if (!accumulator) accumulator = template
-      else accumulator = delim ? nest`${accumulator}${delim}${template}` : accumulator.plus(template)
+      else accumulator = delim ? nest`${accumulator}${raw(delim)}${template}` : accumulator.plus(template)
     }
   }
   return accumulator
