@@ -130,3 +130,4 @@ module.exports = nest
 module.exports.nest = nest
 module.exports.join = join
 module.exports.raw = raw
+module.exports.Template = Template
