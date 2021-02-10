@@ -1,7 +1,7 @@
 {
   "name": "nest-literal",
   "description": "Use nested and composable string literals with functions and promises.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "index.js",
   "license": "MIT",
   "repository": {

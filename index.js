@@ -5,6 +5,7 @@ function nest(callSite, ...substitutions) {
 function joinWith (delim, templates) {
   let accumulator = null
   for (let template of templates) {
+    if (!(template instanceof Template)) template = nest`${template}`
     if (template instanceof Template) {
       if (!accumulator) accumulator = template
       else accumulator = delim ? nest`${accumulator}${raw(delim)}${template}` : accumulator.plus(template)
@@ -19,11 +20,13 @@ function raw(string) {
 
 function join (...templates) {
   if (templates.length === 1 && templates[0] && templates[0][Symbol.iterator]) return joinWith('', templates[0])
+  if (templates.length === 4 && typeof templates[2] === 'number' && Array.isArray(templates[3])) return joinWith('', templates.slice(0, 2))
   return joinWith('', templates)
 }
 
 join.with = (delim) => (...templates) => {
   if (templates.length === 1 && templates[0] && templates[0][Symbol.iterator]) return joinWith(delim, templates[0])  
+  if (templates.length === 4 && typeof templates[2] === 'number' && Array.isArray(templates[3])) return joinWith(delim, templates.slice(0, 2))
   return joinWith(delim, templates)
 }
 

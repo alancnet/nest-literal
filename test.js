@@ -62,6 +62,9 @@ async function testFlatten() {
   assert.deepStrictEqual(d.callSite, ['hello foo leroy ', ' jenkins bar world'])
   assert.deepStrictEqual(d.substitutions, [3])
 
+  const e = [1,2,3,4,5].reduce(join.with(','))
+  assert.deepStrictEqual(e.callSite, ['', ',', ',', ',', ',', ''])
+  assert.deepStrictEqual(e.substitutions, [1,2,3,4,5])
 
   // console.log(String.raw(...d))
   //console.log(...d)
