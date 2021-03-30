@@ -1,3 +1,9 @@
+/**
+ * 
+ * @param {string[]} callSite 
+ * @param  {...any} substitutions 
+ * @returns {Template}
+ */
 function nest(callSite, ...substitutions) {
   return new Template(callSite, ...substitutions)
 }
@@ -18,6 +24,37 @@ function raw(string) {
   return new String(string)
 }
 
+function merge (target, ...sources) {
+  for (const b of sources) {
+    for (const key in b) {
+      const av = target[key]
+      const bv = b[key]
+
+      if (Array.isArray(bv)) {
+        if (Array.isArray(av)) {
+          target[key] = [...av, ...bv]
+        } else {
+          target[key] = [...bv]
+        }
+      } else if (bv instanceof Set) {
+        if (av instanceof Set) {
+          target[key] = new Set([...av, ...bv])
+        } else {
+          target[key] = new Set([...bv])
+        }
+      } else if (bv instanceof Map) {
+        if (av instanceof Map) {
+          target[key] = new Map([...av, ...bv])
+        } else {
+          target[key] = new Map([...bv])
+        }
+      } else {
+        target[key] = bv
+      }
+    }
+  }
+  return target
+}
 function join (...templates) {
   if (templates.length === 1 && templates[0] && templates[0][Symbol.iterator]) return joinWith('', templates[0])
   if (templates.length === 4 && typeof templates[2] === 'number' && Array.isArray(templates[3])) return joinWith('', templates.slice(0, 2))
@@ -59,14 +96,20 @@ function toStringSync(value) {
   if (value === undefined) return 'undefined'
   return value.toString()
 }
-
 class Template {
+  /**
+   * 
+   * @param {string[]} callSite 
+   * @param  {...any} substitutions 
+   */
   constructor(callSite, ...substitutions) {
     callSite = callSite.slice()
     substitutions = substitutions.slice()
+    const metas = []
     for (let i = callSite.length - 1; i >= 0; i--) {
       let sub = substitutions[i]
       if (sub instanceof Template) {
+        metas.push(sub.meta)
         if (sub.callSite.length === 0) {
           callSite[i] = callSite[i] + callSite[i + 1]
           callSite.splice(i + 1, 1)
@@ -94,6 +137,8 @@ class Template {
         substitutions.splice(i, 1)
       }
     }
+
+    this.meta = merge({}, ...metas.reverse())
 
     this.callSite = callSite
     this.substitutions = substitutions
@@ -127,6 +172,16 @@ class Template {
   }
   plus(template) {
     return nest`${this}${template}`
+  }
+  /**
+   * Appends meta data accessible with .meta.
+   * @param {Object<string,any>} data
+   * @returns {Template}
+   */
+  withMeta(data) {
+    const template = new Template(this.callSite, ...this.substitutions)
+    template.meta = Object.assign({}, this.meta, data)
+    return template
   }
 }
 module.exports = nest

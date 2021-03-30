@@ -99,5 +99,35 @@ const tableName = 'MyTable'
 const name = 'Leroy'
 
 const sql = nest`select * from ${raw(tableName)} where name = ${name}`
+```
 
+### Meta data
+
+You can collect information about data injected into a template. `.withMeta(...)` allows to pass
+an object of metadata. Information is collected in the resulting template with a last-writer-wins
+policy. Scalar values are overwritten, Arrays are concatenated, Maps and Sets are merged.
+
+```javascript
+const { nest, raw } = require('nest-literal')
+
+const hello = nest`Hello`.withMeta({
+  last: 'hello',
+  uses: ['Foo'],
+  requires: new Set(['Admin', 'Guest'])
+})
+const world = nest`Hello`.withMeta({
+  last: 'world',
+  uses: ['Bar'],
+  requires: new Set(['Admin', 'User'])
+})
+const combined = nest`${hello} ${world}`
+console.log(combined.meta)
+```
+
+```
+{
+  last: 'world',
+  uses: [ 'Foo', 'Bar' ],
+  requires: Set(3) { 'Admin', 'Guest', 'User' }
+}
 ```

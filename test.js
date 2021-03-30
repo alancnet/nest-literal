@@ -72,9 +72,40 @@ async function testFlatten() {
 }
 
 async function testRaw() {
-  const a = nest`hello ${raw('world')} ${raw('foo')} bar`
+  const a = nest`hello ${raw('world')} ${raw('foo')} bar`.withMeta({
+    a: 1,
+    b: 2,
+    c: 3,
+    e: new Set([1,2,3]),
+    f: new Map([['a',1], ['b',2], ['c',3]]),
+    g: [1,2,3]
+  })
+  const b = nest`hello ${raw('world')} ${raw('foo')} bar`.withMeta({
+    b: 3,
+    c: 4,
+    d: 5,
+    e: new Set([3,4,5]),
+    f: new Map([['b',3], ['c',4], ['d',5]]),
+    g: [3,4,5]
+  })
+  const c = nest`hello ${a} ${b}`
   assert.deepStrictEqual(a.callSite, ['hello world foo bar'])
   assert.deepStrictEqual(a.substitutions, [])
+  console.log(c.meta)
+
+  const hello = nest`Hello`.withMeta({
+    last: 'hello',
+    uses: ['Foo'],
+    requires: new Set(['Admin', 'Guest'])
+  })
+  const world = nest`Hello`.withMeta({
+    last: 'world',
+    uses: ['Bar'],
+    requires: new Set(['Admin', 'User'])
+  })
+  const combined = nest`${hello} ${world}`
+  console.log(combined.meta)
+
 }
 
 main().catch(err => {
