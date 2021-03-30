@@ -176,8 +176,13 @@ export class Template {
 
     this.callSite = callSite
     this.substitutions = substitutions
-    Object.defineProperty(this.callSite, 'raw', {
-      get: () => callSite
+    Object.defineProperties(this.callSite, {
+      raw: {
+        get: () => callSite
+      },
+      meta: {
+        get: () => this.meta
+      }
     })
   }
   toString() {
