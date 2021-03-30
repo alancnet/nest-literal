@@ -9,7 +9,7 @@ Use string literals with functions and promises.
 Substitutions used in `nest` string literals will be evaluated lazily, thus if they reference objects or functions, the value may be different at the time the template is stringified. 
 
 ```javascript
-const nest = require('nest-literal')
+import nest from 'nest-literal'
 
 function data() {
   return 'World'
@@ -25,7 +25,7 @@ console.log(template.toString())
 If a substitution is a Promise, or a function that returns a promise, the promise can be resolved before the template is stringified if the template is used as a promise.
 
 ```javascript
-const nest = require('nest-literal')
+import nest from 'nest-literal'
 
 async function data() {
   return 'World'
@@ -41,7 +41,7 @@ console.log(await template)
 You can nest templates. The resulting template is flattened.
 
 ```javascript
-const nest = require('nest-literal')
+import nest from 'nest-literal'
 
 async function data() {
   return 'World'
@@ -58,7 +58,7 @@ console.log(await template)
 If you have multiple templates, you can join them using `join` or `.plus`
 
 ```javascript
-const { nest, join } = require('nest-literal')
+import { nest, join } from 'nest-literal'
 
 async function data() {
   return 'World'
@@ -93,7 +93,7 @@ If you want to manipulate your template and keep your values separate, you can u
 
 
 ```javascript
-const { nest, raw } = require('nest-literal')
+import { nest, raw } from 'nest-literal'
 
 const tableName = 'MyTable'
 const name = 'Leroy'
@@ -108,7 +108,7 @@ an object of metadata. Information is collected in the resulting template with a
 policy. Scalar values are overwritten, Arrays are concatenated, Maps and Sets are merged.
 
 ```javascript
-const { nest, raw } = require('nest-literal')
+import nest from 'nest-literal'
 
 const hello = nest`Hello`.withMeta({
   last: 'hello',

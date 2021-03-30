@@ -1,5 +1,5 @@
-const {nest, join, raw} = require('.')
-const assert = require('assert')
+import {nest, join, raw} from './index.js'
+import assert from 'assert'
 
 async function main() {
   const data = {
@@ -65,6 +65,14 @@ async function testFlatten() {
   const e = [1,2,3,4,5].reduce(join.with(','))
   assert.deepStrictEqual(e.callSite, ['', ',', ',', ',', ',', ''])
   assert.deepStrictEqual(e.substitutions, [1,2,3,4,5])
+
+  const f = [1,2,3,4,5].reduce(join)
+  assert.deepStrictEqual(f.callSite, ['', '', '', '', '', ''])
+  assert.deepStrictEqual(f.substitutions, [1,2,3,4,5])
+
+  const g = [1,2,3,4,5].reduce(join(','))
+  assert.deepStrictEqual(g.callSite, ['', ',', ',', ',', ',', ''])
+  assert.deepStrictEqual(g.substitutions, [1,2,3,4,5])
 
   // console.log(String.raw(...d))
   //console.log(...d)

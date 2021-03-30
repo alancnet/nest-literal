@@ -4,11 +4,18 @@
  * @param  {...any} substitutions 
  * @returns {Template}
  */
-function nest(callSite, ...substitutions) {
+export function nest(callSite, ...substitutions) {
   return new Template(callSite, ...substitutions)
 }
 
-function joinWith (delim, templates) {
+/**
+ * Joins Templates, similar to `Array.prototype.join`. 
+ * 
+ * @param {string} delim String to place between templates.
+ * @param {Template[]} templates Templates to join
+ * @returns {Template}
+ */
+export function joinWith (delim, templates) {
   let accumulator = null
   for (let template of templates) {
     if (!(template instanceof Template)) template = nest`${template}`
@@ -20,7 +27,13 @@ function joinWith (delim, templates) {
   return accumulator
 }
 
-function raw(string) {
+/**
+ * Marks a string variable such that it won't be encoded or interpreted, but will be included as part of the template.
+ * 
+ * @param {string} string 
+ * @returns {String}
+ */
+export function raw(string) {
   return new String(string)
 }
 
@@ -55,13 +68,33 @@ function merge (target, ...sources) {
   }
   return target
 }
-function join (...templates) {
+
+/**
+ * Adaptive reducer function to be used with `Array.prototype.reduce`.
+ * 
+ * @example template = join(template1, template2, template3)
+ * @example template = join(templateArray)
+ * @example template = templateArray.reduce(join)
+ * @example template = templateArray.reduce(join(','))
+ * @example template = templateArray.reduce(join.with(','))
+ * @param  {...Template} templates 
+ * @returns {Template}
+ */
+export function join (...templates) {
+  if (templates.length === 1 && typeof templates[0] === 'string') return join.with(templates[0])
   if (templates.length === 1 && templates[0] && templates[0][Symbol.iterator]) return joinWith('', templates[0])
   if (templates.length === 4 && typeof templates[2] === 'number' && Array.isArray(templates[3])) return joinWith('', templates.slice(0, 2))
   return joinWith('', templates)
 }
 
-join.with = (delim) => (...templates) => {
+/**
+ * Reducer function to be used with `Array.prototype.reduce`.
+ * 
+ * @example templateArray.reduce(join.with(','))
+ * @param  {...Template} templates 
+ * @returns {Template}
+ */
+ join.with = (delim) => (...templates) => {
   if (templates.length === 1 && templates[0] && templates[0][Symbol.iterator]) return joinWith(delim, templates[0])  
   if (templates.length === 4 && typeof templates[2] === 'number' && Array.isArray(templates[3])) return joinWith(delim, templates.slice(0, 2))
   return joinWith(delim, templates)
@@ -96,11 +129,12 @@ function toStringSync(value) {
   if (value === undefined) return 'undefined'
   return value.toString()
 }
-class Template {
+export class Template {
   /**
+   * Represents a nested string template.
    * 
-   * @param {string[]} callSite 
-   * @param  {...any} substitutions 
+   * @param {string[]} callSite Array of strings surrounding substitutions.
+   * @param  {...any} substitutions Series of nested templates, raw strings, or value substitutions.
    */
   constructor(callSite, ...substitutions) {
     callSite = callSite.slice()
@@ -170,6 +204,13 @@ class Template {
     yield this.callSite
     yield* this.substitutions
   }
+
+  /**
+   * Appends another template
+   * 
+   * @param {Template} template 
+   * @returns {Template}
+   */
   plus(template) {
     return nest`${this}${template}`
   }
@@ -184,8 +225,5 @@ class Template {
     return template
   }
 }
-module.exports = nest
-module.exports.nest = nest
-module.exports.join = join
-module.exports.raw = raw
-module.exports.Template = Template
+
+export default nest
