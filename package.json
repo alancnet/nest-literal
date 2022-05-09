@@ -1,8 +1,12 @@
 {
   "name": "nest-literal",
   "description": "Use nested and composable string literals with functions and promises.",
-  "version": "2.0.1",
-  "main": "index.js",
+  "version": "2.0.2",
+  "main": "src/index.js",
+  "exports": {
+    "import": "./src/index.js",
+    "require": "./lib/index.js"
+  },
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -10,6 +14,17 @@
     "url": "https://github.com/alancnet/nest-literal"
   },
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js",
+    "build": "babel src --out-dir lib",
+    "prepublish": "npm run build"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.17.10",
+    "@babel/preset-env": "^7.17.10"
+  },
+  "dependencies": {
+    "core-js": "^3.22.4",
+    "regenerator-runtime": "^0.13.9"
   }
 }

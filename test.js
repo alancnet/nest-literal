@@ -1,4 +1,4 @@
-import {nest, join, raw} from './index.js'
+import {nest, join, raw} from './src/index.js'
 import assert from 'assert'
 
 async function main() {
